@@ -4,8 +4,39 @@ import {
   text,
   primaryKey,
   integer,
+  index,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+
+export const msg = pgTable(
+  "msg",
+  {
+    user_id: text("user_id").references(() => users.id, {
+      onDelete: "cascade",
+    }),
+    chat_room: text("chat_room"),
+    message: text("message"),
+  },
+  (table) => {
+    return {
+      chat_roomIdx: index("chat_room_idx").on(table.chat_room),
+    };
+  }
+);
+
+export const userDocs = pgTable("user_docs", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, {
+      onDelete: "cascade",
+    }),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  pdf: text("pdf").notNull(),
+});
 
 export const users = pgTable("user", {
   id: text("id")

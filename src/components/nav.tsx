@@ -17,7 +17,7 @@ export async function Nav() {
             {session?.user && (
               <>
                 <Link
-                  href="/items/create"
+                  href="/create"
                   className="hover:underline flex items-center gap-1"
                 >
                   Create ➕
