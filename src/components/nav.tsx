@@ -51,7 +51,7 @@ export async function Nav() {
               <form
                 action={async () => {
                   "use server";
-                  await signIn("github", { redirectTo: "/dashboard" });
+                  await signIn("github", { redirectTo: "/" });
                 }}
               >
                 <button type="submit">Sign in</button>
