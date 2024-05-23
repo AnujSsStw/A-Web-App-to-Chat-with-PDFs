@@ -3,6 +3,8 @@ import { UploadButton, UploadDropzone } from "@/components/uploadthing";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ClientUploadedFileData } from "uploadthing/types";
+import axios from "axios";
+import { sendToQueue } from "./f";
 
 export default function Create() {
   const [title, setTitle] = useState("");
@@ -15,18 +17,7 @@ export default function Create() {
     }>[]
   ) {
     try {
-      await fetch("/api/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-          pdf: res[0].url,
-          userId: res[0].serverData.uploadedBy,
-        }),
-      });
+      await sendToQueue(title, description, res);
       router.push("/");
     } catch (error: any) {
       alert(`ERROR! ${error.message}`);

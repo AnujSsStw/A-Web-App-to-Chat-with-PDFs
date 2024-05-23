@@ -6,7 +6,8 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     NODE_ENV: z.string().min(1),
     UPLOADTHING_SECRET: z.string().min(1),
-    // OPEN_AI_API_KEY: z.string().min(1),
+    OPENAI_API_KEY: z.string().min(1),
+    REDIS_URL: z.string().url(),
   },
   client: {},
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
@@ -14,7 +15,8 @@ export const env = createEnv({
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
-    // OPEN_AI_API_KEY: process.env.OPEN_AI_API_KEY,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    REDIS_URL: process.env.REDIS_URL,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   // experimental__runtimeEnv: {

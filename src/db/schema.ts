@@ -5,17 +5,21 @@ import {
   primaryKey,
   integer,
   index,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccountType } from "next-auth/adapters";
+// import { vector } from "pgvector/drizzle-orm";
 
 export const msg = pgTable(
   "msg",
   {
-    user_id: text("user_id").references(() => users.id, {
-      onDelete: "cascade",
-    }),
     chat_room: text("chat_room"),
     message: text("message"),
+    created_at: timestamp("created_at", { mode: "date" }).$defaultFn(
+      () => new Date()
+    ),
+
+    user_type: text("user_type").notNull(),
   },
   (table) => {
     return {
@@ -23,6 +27,43 @@ export const msg = pgTable(
     };
   }
 );
+
+import { customType } from "drizzle-orm/pg-core";
+import { create } from "domain";
+
+export const vector = customType<{
+  data: number[];
+  driverData: string;
+  config: { size: number };
+}>({
+  dataType(config) {
+    const dt =
+      !!config && typeof config.size === "number"
+        ? `vector(${config.size})`
+        : "vector";
+    return dt;
+  },
+  fromDriver(value) {
+    return JSON.parse(value);
+  },
+  toDriver(value) {
+    return JSON.stringify(value);
+  },
+});
+
+export const embeddings = pgTable("embeddings", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+
+  embedding: vector("embedding", { size: 1024 }).notNull(),
+  text: text("text").notNull(),
+  tokenLength: integer("token_length").notNull(),
+
+  userDocId: text("user_doc_id").references(() => userDocs.id, {
+    onDelete: "cascade",
+  }),
+});
 
 export const userDocs = pgTable("user_docs", {
   id: text("id")
@@ -33,9 +74,14 @@ export const userDocs = pgTable("user_docs", {
     .references(() => users.id, {
       onDelete: "cascade",
     }),
+
   title: text("title").notNull(),
   description: text("description").notNull(),
   pdf: text("pdf").notNull(),
+
+  created_at: timestamp("created_at", { mode: "date" })
+    .notNull()
+    .$defaultFn(() => new Date()),
 });
 
 export const users = pgTable("user", {

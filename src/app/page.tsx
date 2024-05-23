@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { database } from "@/db/database";
 import { userDocs } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import Image from "next/image";
+import Link from "next/link";
 
 export default async function Home() {
   const session = await auth();
@@ -20,7 +20,7 @@ export default async function Home() {
       <ul>
         {docs.map((doc) => (
           <li key={doc.id}>
-            <h2>{doc.title}</h2>
+            <Link href={`/doc/${doc.id}`}>{doc.title}</Link>
           </li>
         ))}
       </ul>
