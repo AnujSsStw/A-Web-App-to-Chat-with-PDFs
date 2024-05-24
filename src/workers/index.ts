@@ -12,7 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 const port = 6969;
-interface Result {
+export interface Result {
   numpages: number;
   numrender: number;
   info: any;
@@ -38,14 +38,11 @@ const worker = new Worker(
 
     const pdfContent = await getPDFContent(body.pdf);
     const l = chunkContent({ content: pdfContent.text });
-    for (let i = 0; i < l.length; i++) {
-      const embedding = await get_embeddings(l[i].content);
-      l[i] = {
-        ...l[i],
-        embedding: embedding,
-      };
+    for (const list of l) {
+      const embedding = await get_embeddings(list.content);
+      list.embedding = embedding;
     }
-    await job.updateProgress(42);
+    console.log(l);
 
     try {
       const { id } = (
@@ -59,16 +56,14 @@ const worker = new Worker(
           })
           .returning({ id: userDocs.id })
       )[0];
-      await job.updateProgress(60);
-      for (let i = 0; i < l.length; i++) {
+      for (const list of l) {
         await database.insert(embeddings).values({
-          embedding: l[i].embedding,
-          text: l[i].content,
-          tokenLength: l[i].tokenLen,
+          embedding: list.embedding,
+          text: list.content,
+          tokenLength: list.tokenLen,
           userDocId: id,
         });
       }
-      await job.updateProgress(100);
     } catch (error: any) {
       console.log("Error: ", error);
     }

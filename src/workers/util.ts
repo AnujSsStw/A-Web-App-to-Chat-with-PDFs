@@ -1,4 +1,29 @@
 import ollama from "ollama";
+export async function get_chat_response({
+  system_message,
+  delimiter,
+  message,
+  nearest,
+}: {
+  system_message: string;
+  delimiter: string;
+  message: string;
+  nearest: any;
+}) {
+  const res = await axios.post("http://localhost:11434/api/chat", {
+    model: "llama3",
+    messages: [
+      { role: "system", content: system_message },
+      { role: "user", content: `${delimiter}${message}${delimiter}` },
+      {
+        role: "assistant",
+        content: `${nearest[0].content}\n ${nearest[1].content}\n ${nearest[2].content}`,
+      },
+    ],
+  });
+  return res;
+}
+
 export async function get_embeddings(text: string) {
   const res = await ollama.embeddings({
     model: "mxbai-embed-large",
@@ -7,6 +32,7 @@ export async function get_embeddings(text: string) {
   return res.embedding;
 }
 import { encode } from "gpt-3-encoder";
+import axios from "axios";
 
 interface ContentChunk {
   content: string;

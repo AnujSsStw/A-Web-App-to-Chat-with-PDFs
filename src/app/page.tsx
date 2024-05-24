@@ -15,15 +15,19 @@ export default async function Home() {
   });
 
   return (
-    <main className="">
-      <h1>Docs</h1>
-      <ul>
+    <main className="mx-7">
+      <h1 className="">Docs</h1>
+      <div className="flex gap-5 ">
         {docs.map((doc) => (
-          <li key={doc.id}>
+          <div
+            className="w-2/4 h-2/4 border-blue-50 border p-8 rounded-xl"
+            key={doc.id}
+          >
             <Link href={`/doc/${doc.id}`}>{doc.title}</Link>
-          </li>
+            <p>{doc.description}</p>
+          </div>
         ))}
-      </ul>
+      </div>
     </main>
   );
 }

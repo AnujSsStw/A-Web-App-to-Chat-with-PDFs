@@ -29,12 +29,25 @@ export default async function Page({ params }: { params: { slug: string } }) {
 
       <div>PDF: {doc.pdf}</div>
 
-      {msgs.map((msg, i) => (
-        <div key={i}>
-          {msg.user_type}: {msg.message}
+      <div className="flex flex-col h-screen">
+        <div className="flex flex-grow overflow-y-auto gap-3 items-center p-4 sticky flex-col">
+          {msgs.map((msg, i) => (
+            <span
+              key={i}
+              className={`p-2 rounded-lg max-w-lg ${
+                msg.user_type === "User"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-300"
+              }`}
+            >
+              {msg.message}
+            </span>
+          ))}
         </div>
-      ))}
-      <Chat docId={doc.id} />
+        <div className="fixed bottom-0 left-0 right-0 p-4">
+          <Chat docId={doc.id} />
+        </div>
+      </div>
     </>
   );
 }

@@ -56,6 +56,9 @@ export const embeddings = pgTable("embeddings", {
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
 
+  // by default it create ALTER TABLE "embeddings" ADD COLUMN "embedding" "vector(1024)" NOT NULL;
+  // but it should be ALTER TABLE "embeddings" ADD COLUMN "embedding" vector(1024) NOT NULL;
+  // size can be different for different embeddings model
   embedding: vector("embedding", { size: 1024 }).notNull(),
   text: text("text").notNull(),
   tokenLength: integer("token_length").notNull(),

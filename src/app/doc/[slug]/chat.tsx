@@ -6,7 +6,7 @@ export function Chat(doc: { docId: string }) {
   return (
     <>
       <form
-        className="flex flex-row gap-7  border p-8 rounded-xl  max-w-lg"
+        className="flex flex-row gap-7  border p-8 rounded-xl  max-w-2xl w-10/12 mx-auto"
         onSubmit={async (e) => {
           e.preventDefault();
 
@@ -28,7 +28,7 @@ export function Chat(doc: { docId: string }) {
         />
 
         <button
-          className="border border-gray-300 rounded-md p-2 mt-0"
+          className="bg-blue-500 text-white rounded-md p-2 mt-0 hover:bg-blue-600"
           type="submit"
         >
           send
